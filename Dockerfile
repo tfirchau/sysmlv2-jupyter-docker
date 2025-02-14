@@ -36,10 +36,10 @@ USER ${NB_USER}
 WORKDIR ${HOME}
 
 ##
-## Miniconda installation page:
-## https://docs.conda.io/en/latest/miniconda.html#linux-installers
+## Miniforge installation page:
+## https://github.com/conda-forge/miniforge
 ##
-RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-$(uname -m).sh
+RUN wget -q "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 
 ## Defining the RELEASE down here ensures that the previous comamnds can
 ## be recycled since they're not affected by the release version.
@@ -48,18 +48,13 @@ ARG RELEASE=2023-02
 ##
 ## SysML page: https://github.com/Systems-Modeling/SysML-v2-Release
 ##
-RUN wget -q https://github.com/Systems-Modeling/SysML-v2-Release/archive/${RELEASE}.tar.gz?ts=20220819Z023100+00 -O ${RELEASE}.tar.gz
+RUN wget -q https://github.com/Systems-Modeling/SysML-v2-Release/archive/${RELEASE}.tar.gz-O ${RELEASE}.tar.gz
 
 ## Install MiniConda
-RUN chmod 755 ${HOME}/Miniconda3-latest-Linux-$(uname -m).sh
+RUN chmod 755 ${HOME}/Miniforge3-$(uname)-$(uname -m).sh
 RUN mkdir ${HOME}/conda
-RUN ${HOME}/Miniconda3-latest-Linux-$(uname -m).sh -f -b -p ${HOME}/conda
+RUN ${HOME}/Miniforge3-$(uname)-$(uname -m).sh -f -b -p ${HOME}/conda
 RUN ${HOME}/conda/condabin/conda init
-
-## Use a different solver to avoid conda hanging
-RUN ${HOME}/conda/condabin/conda update conda
-RUN ${HOME}/conda/condabin/conda install -n base conda-build conda-libmamba-solver
-RUN ${HOME}/conda/condabin/conda config --set solver libmamba
 
 ## Install SysML
 RUN tar xzf ${RELEASE}.tar.gz
